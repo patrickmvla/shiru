@@ -19,8 +19,6 @@ import { useChat } from "@/hooks/use-chat";
 import { useUploadDocument } from "@/hooks/use-upload-document";
 import { useAppStore } from "@/lib/store";
 
-// --- Form Schemas using Zod ---
-
 const fileSchema = z.object({
   file: z.any().refine((files) => files?.length === 1, "File is required."),
 });
@@ -32,26 +30,18 @@ const chatSchema = z.object({
 type FileFormValues = z.infer<typeof fileSchema>;
 type ChatFormValues = z.infer<typeof chatSchema>;
 
-/**
- * The main page component for the Study Buddy AI application.
- * This is a client component that manages all user interactions.
- */
 export default function Home() {
-  // --- Hydration Mismatch Fix ---
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // --- State Management ---
   const { messages, documents } = useAppStore();
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- API Hooks ---
   const uploadMutation = useUploadDocument();
   const chatMutation = useChat();
 
-  // --- Form Hooks ---
   const fileForm = useForm<FileFormValues>({
     resolver: zodResolver(fileSchema),
   });
@@ -60,7 +50,6 @@ export default function Home() {
     resolver: zodResolver(chatSchema),
   });
 
-  // --- Event Handlers ---
   const handleFileUpload = (data: FileFormValues) => {
     const file = data.file[0];
     if (file) {
@@ -74,7 +63,6 @@ export default function Home() {
     chatForm.reset();
   };
 
-  // --- Effects ---
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -82,10 +70,7 @@ export default function Home() {
     }
   }, [messages]);
 
-  // --- Render Logic ---
   if (!isMounted) {
-    // Render nothing or a loading spinner on the server and initial client render
-    // to prevent hydration mismatch.
     return null;
   }
 

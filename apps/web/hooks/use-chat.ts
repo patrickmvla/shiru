@@ -10,11 +10,6 @@ interface ChatPayload {
   message: string;
 }
 
-/**
- * The function that makes the API call to the chat endpoint.
- * @param payload The chat message payload.
- * @returns A promise that resolves with the server's response.
- */
 const sendMessage = async (payload: ChatPayload): Promise<Message> => {
   const response = await fetch(`${API_BASE_URL}/api/chat`, {
     method: "POST",
@@ -45,7 +40,6 @@ export const useChat = () => {
   return useMutation({
     mutationFn: sendMessage,
     onMutate: async (variables) => {
-      // Optimistically add the user's message to the store
       const userMessage: Message = {
         id: uuidv4(),
         role: "user",
@@ -54,7 +48,6 @@ export const useChat = () => {
       addMessage(userMessage);
     },
     onSuccess: (data) => {
-      // On success, add the assistant's response to the store
       addMessage(data);
     },
     onError: (error) => {
@@ -64,7 +57,7 @@ export const useChat = () => {
       //   description: error.message,
       //   variant: 'destructive',
       // });
-      // Optionally, you could add a message to the chat indicating an error
+
       const errorMessage: Message = {
         id: uuidv4(),
         role: "assistant",
