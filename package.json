@@ -1,0 +1,21 @@
+{
+  "name": "shiru",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "cd apps/web && bun run dev",
+    "dev:api": "cd apps/api && bun --watch src/index.ts",
+    "dev": "concurrently \"bun run dev:api\" \"bun run dev:web\"",
+    "build:web": "cd apps/web && bun run build",
+    "build:api": "cd apps/api && bun run build",
+    "build": "concurrently \"bun run build:api\" \"bun run build:web\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "llama-cloud-services": "^0.2.0"
+  }
+}
