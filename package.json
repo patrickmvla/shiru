@@ -10,7 +10,7 @@
     "dev": "concurrently \"bun run dev:api\" \"bun run dev:web\"",
     "build:web": "cd apps/web && bun run build",
     "build:api": "cd apps/api && bun run build",
-    "build": "concurrently \"bun run build:api\" \"bun run build:web\""
+     "build": "bun run build:web && bun run build:api"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
