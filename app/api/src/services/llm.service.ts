@@ -5,12 +5,18 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+export type ContextChunk = {
+  text: string;
+  source: string;
+  score: number;
+};
+
 export class LLMService {
   public static async generateAnswer(
     query: string,
-    context: any[]
+    context: ContextChunk[]
   ): Promise<string> {
-    const contextText = context.map((c) => c.payload.text).join("\n---\n");
+    const contextText = context.map((c) => c.text).join("\n---\n");
 
     const prompt = `
       You are an expert study assistant. Your goal is to answer questions based ONLY on the provided context.

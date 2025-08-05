@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 
 // import { useToast } from '@/components/ui/use-toast';
 
-const API_BASE_URL = "http://localhost:8000";
+//const API_BASE_URL = "http://localhost:3000";
 
 interface ChatPayload {
   message: string;
 }
 
 const sendMessage = async (payload: ChatPayload): Promise<Message> => {
-  const response = await fetch(`${API_BASE_URL}/api/chat`, {
+  const response = await fetch("/api/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

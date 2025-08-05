@@ -1,16 +1,20 @@
-import { pipeline } from "@xenova/transformers";
+import { FeatureExtractionPipeline, pipeline } from "@xenova/transformers";
 
 export class EmbeddingService {
-  private static instance: Promise<any> | null = null;
+  private static instance: Promise<FeatureExtractionPipeline> | null = null;
 
   private static model = "Xenova/bge-large-en-v1.5";
 
-  private static task: "feature-extraction" = "feature-extraction";
+  private static task = "feature-extraction" as const;
 
-  public static async getInstance(): Promise<any> {
+  public static async getInstance(): Promise<FeatureExtractionPipeline> {
     if (this.instance === null) {
       console.log("Initializing embedding model...");
-      this.instance = pipeline(this.task, this.model);
+
+      this.instance = pipeline(
+        this.task,
+        this.model
+      ) as Promise<FeatureExtractionPipeline>;
     }
     return this.instance;
   }

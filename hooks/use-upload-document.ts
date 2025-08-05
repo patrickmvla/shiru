@@ -3,13 +3,13 @@ import { useAppStore } from "@/lib/store";
 
 // import { useToast } from '@/components/ui/use-toast';
 
-const API_BASE_URL = "http://localhost:8000";
+//const API_BASE_URL = "http://localhost:3000";
 
 const uploadDocument = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(`${API_BASE_URL}/api/upload`, {
+  const response = await fetch("/api/upload", {
     method: "POST",
     body: formData,
   });

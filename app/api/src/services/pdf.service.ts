@@ -23,9 +23,12 @@ export class PdfService {
 
   private async getParsedText(fileBuffer: Buffer): Promise<string> {
     const formData = new FormData();
+
+    const arrayBuffer = new Uint8Array(fileBuffer).buffer;
+
     formData.append(
       "file",
-      new Blob([fileBuffer], { type: "application/pdf" })
+      new Blob([arrayBuffer], { type: "application/pdf" })
     );
 
     const uploadResponse = await fetch(

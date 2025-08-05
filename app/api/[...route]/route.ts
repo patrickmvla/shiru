@@ -1,28 +1,16 @@
 import { Hono } from "hono";
-import { serve } from "@hono/node-server";
-import { cors } from "hono/cors";
-import { pdfService } from "./services/pdf.service";
-import { qdrantService } from "./services/qdrant.service";
-import { LLMService } from "./services/llm.service";
+import { handle } from "hono/vercel";
+
+import { pdfService } from "../src/services/pdf.service";
+import { qdrantService } from "../src/services/qdrant.service";
+import { LLMService } from "../src/services/llm.service";
 
 const app = new Hono();
-
-app.use(
-  "/api/*",
-  cors({
-    origin: "*",
-    allowMethods: ["POST", "GET", "OPTIONS"],
-  })
-);
-
-app.get("/", (c) => {
-  return c.json({ message: "Study Buddy AI server is running!" });
-});
 
 app.post("/api/upload", async (c) => {
   try {
     const body = await c.req.formData();
-    const file = body.get("file") as File;
+    const file = body.get("file") as File | null;
 
     if (!file) {
       return c.json({ success: false, error: "No file provided." }, 400);
@@ -45,17 +33,15 @@ app.post("/api/upload", async (c) => {
 app.post("/api/chat", async (c) => {
   try {
     const { message } = await c.req.json();
-
     if (!message) {
       return c.json({ success: false, error: "No message provided." }, 400);
     }
 
     const contextChunks = await qdrantService.search(message);
-
     const answer = await LLMService.generateAnswer(message, contextChunks);
 
     const sources = contextChunks.map((chunk) => ({
-      source: chunk.payload.source,
+      source: chunk.source,
     }));
 
     const uniqueSources = Array.from(
@@ -72,10 +58,5 @@ app.post("/api/chat", async (c) => {
   }
 });
 
-const port = 8000;
-console.log(`Backend server is running on http://localhost:${port}`);
-
-serve({
-  fetch: app.fetch,
-  port,
-});
+export const GET = handle(app);
+export const POST = handle(app);
